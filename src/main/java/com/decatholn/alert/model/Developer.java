@@ -1,7 +1,6 @@
 package com.decatholn.alert.model;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,7 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name = "developer")
@@ -27,7 +27,7 @@ public class Developer implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Integer dev_id;
 	
 	@Column(name = "dev_name")
 	private String devName;
@@ -35,24 +35,15 @@ public class Developer implements Serializable {
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
-	public Team getTeam() {
-		return team;
-	}
-
-	public void setTeam(Team team) {
-		this.team = team;
-	}
-
-	@JoinColumn(referencedColumnName = "id", insertable = true)
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToOne
 	private Team team;
 
-	public Integer getId() {
-		return id;
+	public Integer getDev_id() {
+		return dev_id;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setDev_id(Integer dev_id) {
+		this.dev_id = dev_id;
 	}
 
 	public String getDevName() {
@@ -69,6 +60,15 @@ public class Developer implements Serializable {
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	@JsonBackReference
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 }

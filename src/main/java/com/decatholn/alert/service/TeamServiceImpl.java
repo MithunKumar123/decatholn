@@ -1,8 +1,9 @@
 package com.decatholn.alert.service;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import com.decatholn.alert.exception.TeamStructureException;
 import com.decatholn.alert.model.Developer;
 import com.decatholn.alert.model.Team;
+import com.decatholn.alert.repository.DeveloperRepo;
 import com.decatholn.alert.repository.TeamRepo;
 
 
@@ -20,6 +22,10 @@ public class TeamServiceImpl implements ITeamService {
 
 	@Autowired
 	TeamRepo teamRepo;
+	
+	
+	@Autowired
+	DeveloperRepo developerRepo;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -43,13 +49,15 @@ public class TeamServiceImpl implements ITeamService {
 	@Override
 	public String alertTeam(Integer team_id) {
 
-		Team team = teamRepo.getById(team_id);
+		Optional<List<Developer>> teams = developerRepo.findByTeam(team_id);
+		
+		List<Developer> team = teams.isPresent()?teams.get():null;
 
 		StringBuilder developerNames = new StringBuilder();
 		
-		developerNames.append(MessageFormat.format("The {0} team developers ", team.getTeamName()).toString());
+		developerNames.append("The developers ");
 
-		for (Developer developer : team.getDevelopers()) {
+		for (Developer developer : team) {
 			
 			Map<String, String> payloadRequest = new HashMap<>();
 

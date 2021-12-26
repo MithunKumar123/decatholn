@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,7 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="team")
@@ -32,8 +35,7 @@ public class Team implements Serializable {
 	@Column(name="team_name")
 	private String teamName;
 	
-	@JoinColumn(name = "team")
-	@OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "team", fetch = FetchType.LAZY)
 	private List<Developer> developers;
 
 	public Integer getId() {
@@ -52,6 +54,7 @@ public class Team implements Serializable {
 		this.teamName = teamName;
 	}
 
+	@JsonManagedReference
 	public List<Developer> getDevelopers() {
 		return developers;
 	}
